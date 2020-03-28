@@ -1,0 +1,6 @@
+{
+  "rust.target": "wasm32-unknown-unknown",
+  "emmet.includeLanguages": {
+    "rust": "html"
+  }
+}
