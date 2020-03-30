@@ -1,4 +1,28 @@
+## How to Run
+
+Make sure you're using the nightly rust in this project:
+
+```bash
+rustup override set nightly
+```
+
+Install all JS build dependencies with npm/yarn:
+
+```sh
+npm install # or yarn install
+```
+
+Then run in your terminal:
+
+```sh
+npm run start:dev # yarn start:dev
+```
+
+Then you can visit http://localhost:8000 in your favorite browser :)
+
 ## About
+
+The purpose of this project is to show how to effectively pass state around your application in a reactive way, without throwing away the convenience of yew's `Agent` system.
 
 You can use this as a minimal template for any of your web applications. The base for the state system here is a `yew` Agent and the `Mutable` wrapper from `futures_signals`.
 
