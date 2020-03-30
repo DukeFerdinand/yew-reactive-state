@@ -11,15 +11,17 @@ use super::subscriber::Subscriber;
 pub struct App {
     ip: Option<String>,
     link: ComponentLink<App>,
-    get_ip: Callback<MouseEvent>,
     store: Box<dyn Bridge<Store>>,
     state_ref: Option<ArcState>,
+    total_subs: i32,
 }
 
 pub enum Msg {
     FromStore(StoreOutput),
     GetIp,
     SetIp(Option<String>),
+    IncSubs,
+    DecSubs,
 }
 
 impl App {
@@ -33,6 +35,18 @@ impl App {
         });
         spawn_local(handler);
     }
+
+    fn get_ip(&self) -> Callback<MouseEvent> {
+        self.link.callback(|_| Msg::GetIp)
+    }
+
+    fn add_sub(&self) -> Callback<MouseEvent> {
+        self.link.callback(|_| Msg::IncSubs)
+    }
+
+    fn dec_sub(&self) -> Callback<MouseEvent> {
+        self.link.callback(|_| Msg::DecSubs)
+    }
 }
 
 impl Component for App {
@@ -40,15 +54,14 @@ impl Component for App {
     type Message = Msg;
 
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let get_ip = link.callback(|_| Msg::GetIp);
         let store = Store::bridge(link.callback(|d| Msg::FromStore(d)));
 
         Self {
             ip: None,
             link,
-            get_ip,
             store,
             state_ref: None,
+            total_subs: 2,
         }
     }
 
@@ -62,14 +75,28 @@ impl Component for App {
             Msg::FromStore(s) => match s {
                 StoreOutput::StateInstance(state) => {
                     self.state_ref = Some(state);
+                    true
                 }
             },
             Msg::GetIp => {
                 self.store.send(StoreInput::Action(GetIp));
+                false
             }
-            Msg::SetIp(ip) => self.ip = ip,
+            Msg::SetIp(ip) => {
+                self.ip = ip;
+                true
+            }
+            Msg::IncSubs => {
+                self.total_subs += 1;
+                true
+            }
+            Msg::DecSubs => {
+                if self.total_subs - 1 >= 1 {
+                    self.total_subs -= 1;
+                }
+                true
+            }
         }
-        true
     }
 
     fn view(&self) -> Html {
@@ -79,12 +106,19 @@ impl Component for App {
         } else {
             &message
         };
+        let subs = (0..self.total_subs).map(|x| html! { <Subscriber id=x /> });
         html! {
             <div class="app-container">
                 <h2>{{ "Click the button to get your ip" }}</h2>
                 <p>{{ ip }}</p>
-                <button onclick=&self.get_ip>{{ "Get ip" }}</button>
-                <Subscriber />
+                <div class="buttons">
+                    <button onclick=&self.get_ip()>{{ "Get ip" }}</button>
+                    <button onclick=&self.add_sub()>{{ "Add subscriber" }}</button>
+                    <button onclick=&self.dec_sub()>{{ "Remove Subscriber" }}</button>
+
+                </div>
+
+                { for subs }
             </div>
         }
     }

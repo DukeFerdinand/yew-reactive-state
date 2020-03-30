@@ -10,6 +10,7 @@ pub struct Subscriber {
     link: ComponentLink<Subscriber>,
     store: Box<dyn Bridge<Store>>,
     state_ref: Option<ArcState>,
+    id: i32,
 }
 
 pub enum Msg {
@@ -29,17 +30,23 @@ impl Subscriber {
     }
 }
 
+#[derive(Properties, Clone)]
+pub struct Props {
+    pub id: i32,
+}
+
 impl Component for Subscriber {
-    type Properties = ();
+    type Properties = Props;
     type Message = Msg;
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let store = Store::bridge(link.callback(|d| Msg::FromStore(d)));
         Self {
             ip: None,
             link,
             store,
             state_ref: None,
+            id: props.id,
         }
     }
 
@@ -63,10 +70,9 @@ impl Component for Subscriber {
             "No IP yet. It will show up here"
         };
         html! {
-          <div class="sebscriber-container">
-            <h4 class="subscriber">{{"I'm a subscriber!"}}</h4>
-            <p>{{"I get my data from the store directly. I can be anywhere in your component tree, all I need is to be initialized with the store"}}</p>
-            {{ ip }}
+          <div class="subscriber-container">
+            <h4 class="subscriber">{{"I'm subscriber "}}{{ self.id }}</h4>
+            {{"IP: "}}{{ ip }}
           </div>
         }
     }
