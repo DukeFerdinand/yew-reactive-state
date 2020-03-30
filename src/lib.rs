@@ -1,6 +1,7 @@
 #![recursion_limit = "512"]
 
 mod app;
+mod services;
 mod store;
 mod subscriber;
 mod utils;

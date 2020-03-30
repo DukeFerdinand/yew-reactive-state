@@ -6,8 +6,10 @@ use yew::prelude::*;
 // use serde_derive::{Deserialize, Serialize};
 // use strum::IntoEnumIterator;
 // use strum_macros::{EnumIter, ToString};
-use super::store::{ArcState, Store, StoreOutput};
+use std::rc::Rc;
 use wasm_bindgen_futures::spawn_local;
+
+use super::store::{ArcState, Store, StoreOutput};
 
 pub struct Subscriber {
     ip: Option<String>,

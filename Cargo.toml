@@ -17,6 +17,8 @@ yew = { version = "0.13", features = ["web_sys"] }
 futures-signals = "0.3.15"
 futures = "0.3.4"
 wasm-bindgen-futures = "0.4.10"
+http = "0.2.1"
+anyhow = "1.0"
 
 # `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
 # compared to the default allocator's ~10K. It is slower than the default

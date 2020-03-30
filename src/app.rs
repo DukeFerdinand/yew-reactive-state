@@ -9,7 +9,7 @@ use web_sys::MouseEvent;
 use yew::prelude::*;
 // use yew::services::storage::{Area, StorageService};
 
-use super::store::{ArcState, Store, StoreInput, StoreOutput};
+use super::store::{ActionType::GetIp, ArcState, Store, StoreInput, StoreOutput};
 use super::subscriber::Subscriber;
 
 pub struct App {
@@ -69,7 +69,7 @@ impl Component for App {
                 }
             },
             Msg::GetIp => {
-                self.store.send(StoreInput::Action);
+                self.store.send(StoreInput::Action(GetIp));
             }
             Msg::SetIp(ip) => self.ip = ip,
         }
