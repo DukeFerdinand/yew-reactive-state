@@ -30,6 +30,7 @@ pub type TaskBundle = (TaskHandlerId, ResponseWrapper);
 #[derive(Deserialize, Serialize)]
 pub enum ActionType {
     GetIp,
+    ClearIp,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -118,6 +119,9 @@ impl Agent for Store {
                     let task = self.fetcher.get_ip(task_name, callback);
 
                     self.register_task(task_clone, task);
+                }
+                ActionType::ClearIp => {
+                    self.state.ip.set(None);
                 }
             },
             _ => {}
