@@ -1,13 +1,9 @@
 use futures::future::ready;
 use futures_signals::signal::SignalExt;
 use log::*;
-// use serde_derive::{Deserialize, Serialize};
-// use strum::IntoEnumIterator;
-// use strum_macros::{EnumIter, ToString};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::MouseEvent;
 use yew::prelude::*;
-// use yew::services::storage::{Area, StorageService};
 
 use super::store::{ActionType::GetIp, ArcState, Store, StoreInput, StoreOutput};
 use super::subscriber::Subscriber;

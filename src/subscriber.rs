@@ -1,13 +1,7 @@
 use futures::future::ready;
 use futures_signals::signal::SignalExt;
-use log::*;
-use log::*;
-use yew::prelude::*;
-// use serde_derive::{Deserialize, Serialize};
-// use strum::IntoEnumIterator;
-// use strum_macros::{EnumIter, ToString};
-use std::rc::Rc;
 use wasm_bindgen_futures::spawn_local;
+use yew::prelude::*;
 
 use super::store::{ArcState, Store, StoreOutput};
 

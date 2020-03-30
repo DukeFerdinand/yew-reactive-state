@@ -1,13 +1,12 @@
 use futures_signals::signal::Mutable;
-use log::*;
 use serde::{Deserialize, Serialize};
 use std::collections::hash_map::HashMap;
 use std::rc::Rc;
 use std::sync::Arc;
 use yew::agent::*;
-use yew::services::fetch::{FetchService, FetchTask};
+use yew::services::fetch::FetchTask;
 
-use super::services::{Fetcher, ResponseWrapper, IP};
+use super::services::{Fetcher, ResponseWrapper};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct State {
@@ -111,7 +110,7 @@ impl Agent for Store {
                         .callback(|resp: TaskBundle| Msg::FetchResponse(resp));
 
                     // This example doesn't account for duplicate task names.
-                    // In production you'll want to either use the date or some other identifier so you don't clear the wrong request
+                    // In your projects you'll want to use a unique identifier so you don't clear the wrong request
                     let task_name = Rc::new(String::from("ip_fetcher"));
 
                     let task_clone = task_name.clone();
