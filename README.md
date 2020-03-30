@@ -1,29 +1,42 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/5ba03ba7-ff8b-4c54-94e7-cd5fd76a6737/deploy-status)](https://app.netlify.com/sites/yew-todomvc/deploys)
-
 ## About
 
-This template shows how to create a web app using Yew and wasm-pack. 
+You can use this as a minimal template for any of your web applications. The base for the state system here is a `yew` Agent and the `Mutable` wrapper from `futures_signals`.
 
-## 🚴 Usage
+The flow is as follows:
 
-### 🛠️ Build with `yarn run build`
+- App Component (or other higher up component) makes first connection with `Store` Agent.
+- `Store` agent is created, instantiates `State` object with `Mutable` field(s).
+- Store sends `StateInstance(State)` back to `App` (or other connected components on connect)
+- Component can then subscribe to any updates it cares about
 
+Here's an example on how to subscribe to updates on a `String` field:
+
+```rust
+impl App {
+    fn register_state_handlers(&self) {
+        let callback = self.link.callback(|ip| Msg::SetIp(ip));
+        let state = self.state_ref.as_ref().unwrap();
+        let handler = state.ip.signal_cloned().for_each(move |u| {
+          info!("{:?}", u); // from log crate
+            callback.emit(u);
+            ready(()) // from futures crate
+        });
+        // for_each converts the signals into futures, so you'll need to spawn that
+        spawn_local(handler); // from wasm_bindgen_futures
+    }
+}
+
+// ... rest of your component implementation
 ```
-yarn run build
+
+The `State` object in this case would look something like this:
+
+```rust
+struct State {
+  ip: Mutable<Option<String>>
+}
 ```
 
-### 🔬 Serve locally with `yarn run start:dev`
+## For More info on `futures_signals`
 
-```
-yarn run start:dev
-```
-
-
-## 🔋 Batteries Included
-
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.
+You can use the tutorial for the library [here](https://docs.rs/futures-signals/0.3.15/futures_signals/tutorial/index.html)
